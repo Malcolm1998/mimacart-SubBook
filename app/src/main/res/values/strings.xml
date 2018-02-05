@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">mimacart-SubBook</string>
+    <string name="add_subscription">Add New Subscription</string>
+    <string name="delete_subscription">Delete Subscription</string>
+    <string name="modify_subscription">Modify Subscription</string>
+    <string name="done">Done</string>
+    <string name="date_started">Date Started:</string>
+    <string name="monthly_charge">Monthly Charge (CAD $):</string>
+    <string name="comments">Comments:</string>
+    <string name="subscription_name">Subscription Name:</string>
 </resources>
