@@ -55,7 +55,8 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String input;
                 Calendar inputDate = Calendar.getInstance();
-                Intent returnIntent = new Intent(CreateSubscriptionActivity.this, SubBookActivity.class);;
+                Intent returnIntent = new Intent(CreateSubscriptionActivity.this,
+                        SubBookActivity.class);
 
                 /*
                  * https://stackoverflow.com/questions/14400298/
@@ -69,19 +70,17 @@ public class CreateSubscriptionActivity extends AppCompatActivity {
                     finish();
                 }
 
-                int intP;
                 input = dayInput.getText().toString();
-                intP = Integer.parseInt(input);
                 returnIntent.putExtra("day", input);
                 input = monthInput.getText().toString();
-                intP = Integer.parseInt(input);
                 returnIntent.putExtra("month", input);
                 input = yearInput.getText().toString();
-                intP = Integer.parseInt(input);
                 returnIntent.putExtra("year", input);
                 returnIntent.putExtra("name", subscriptionNameInput.getText().toString());
                 input = monthlyChargeInput.getText().toString();
                 returnIntent.putExtra("monthlyCharge", input);
+                input = commentsInput.getText().toString();
+                returnIntent.putExtra("comments", input);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
 

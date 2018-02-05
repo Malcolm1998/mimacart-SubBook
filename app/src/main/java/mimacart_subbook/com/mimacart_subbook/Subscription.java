@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class Subscription {
     private String name;
+    private String comments;
     private Calendar dateStarted;
     private double monthlyCharge;
 
@@ -18,6 +19,14 @@ public class Subscription {
 
     public void setName(String newName){
         this.name = newName;
+    }
+
+    public void setMonthlyCharge(double newMonthlyCharge){
+        monthlyCharge = newMonthlyCharge;
+    }
+
+    public void setComments(String newComments){
+        this.comments = newComments;
     }
 
     public void setDateStarted(Calendar newDate){
@@ -36,14 +45,6 @@ public class Subscription {
         dateStarted.set(Calendar.YEAR, newYear);
     }
 
-    public void setMonthlyCharge(double newMonthlyCharge){
-        monthlyCharge = newMonthlyCharge;
-    }
-
-    public Calendar getDateStarted(){
-        return this.dateStarted;
-    }
-
     public String getName(){
         return name;
     }
@@ -51,4 +52,25 @@ public class Subscription {
     public double getMonthlyCharge(){
         return monthlyCharge;
     }
+
+    public String getComments(){
+        return this.comments;
+    }
+
+    public Date getDateStarted(){
+        return this.dateStarted.getTime();
+    }
+
+    public int getDateStartedDayOfMonth(){
+        return dateStarted.get(Calendar.DAY_OF_MONTH);}
+
+    public int getDateStartedMonth(){
+        return dateStarted.get(Calendar.MONTH);
+    }
+
+    public int getDateStartedYear(){
+        return dateStarted.get(Calendar.YEAR);
+    }
+
+
 }
