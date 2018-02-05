@@ -1,3 +1,14 @@
+/*
+ * SubBookActivity
+ *
+ * February 4, 2018
+ *
+ * Copyright © 2018 Team X, CMPUT301, University of Alberta - All rights Reserved.
+ * You may use, distribute, or modify this code under terms and conditions of the Code
+ * of Student Behaviour at University of Alberta.
+ * You can find a copy of the license in this project. Otherwise contact mimacart@ualberta.ca
+ */
+
 package mimacart_subbook.com.mimacart_subbook;
 
 import android.app.Activity;
@@ -25,33 +36,41 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * The main class for running SubBook
+ */
 public class SubBookActivity extends AppCompatActivity {
     private static final String FILENAME = "subscriptions.sav";
+    Subscription clickedSubscription;
     private ListView subscriptionListView;
     private ArrayList<Subscription> subscriptionList;
     private Button addSubscriptionButton;
     private SubscriptionAdapter adapter;
 
-
+    /**
+     * Called when the activity related to this class created
+     *
+     * @param savedInstanceState the state from last opening
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("LifeCycle ---->", "onCreate is called");
         setContentView(R.layout.activity_main);
 
         subscriptionList = new ArrayList<Subscription>();
 
+        // Get view object instances.
         addSubscriptionButton = findViewById(R.id.addSubscription);
         subscriptionListView = findViewById(R.id.subscriptionListView);
 
-        //adapter = new SubscriptionAdapter(this, subscriptionList);
-        //subscriptionListView.setAdapter(adapter);
-
         addSubscriptionButton.setOnClickListener(new View.OnClickListener(){
 
+            /**
+             * Called when the modify button is clicked
+             *
+             * @param v the View
+             */
             public void onClick(View v) {
-                //saveInFile();
-
                 Intent createIntent = new Intent(SubBookActivity.this,
                         CreateSubscriptionActivity.class);
                 startActivityForResult(createIntent, 1);
@@ -59,8 +78,12 @@ public class SubBookActivity extends AppCompatActivity {
         });
 
         subscriptionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            Subscription clickedSubscription;
 
+            /**
+             * Called when an itme in ListView is clicked
+             *
+             * @param v the View
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //saveInFile();
@@ -68,26 +91,19 @@ public class SubBookActivity extends AppCompatActivity {
                 Intent detailIntent = new Intent(SubBookActivity.this,
                         SubscriptionDetailsActivity.class);
                 clickedSubscription = adapter.getItem(position);
-                detailIntent.putExtra("name", clickedSubscription.getName());
-                detailIntent.putExtra("monthlyCharge",
-                        String.valueOf(clickedSubscription.getMonthlyCharge()));
-                detailIntent.putExtra("comments",
-                        clickedSubscription.getComments());
-                detailIntent.putExtra("day",
-                        String.valueOf(clickedSubscription.getDateStartedDayOfMonth()));
-                detailIntent.putExtra("month",
-                        String.valueOf(clickedSubscription.getDateStartedMonth()));
-                detailIntent.putExtra("year",
-                        String.valueOf(clickedSubscription.getDateStartedYear()));
+                detailIntent.putExtra("clickedSubscription", clickedSubscription);
+
                 startActivityForResult(detailIntent, 2);
             }
         });
     }
 
+    /**
+     * Called when associated activity starts and sets subscription values
+     */
     @Override
     protected void onStart(){
         super.onStart();
-        Log.d("LifeCycle ---->", "onStart is called");
 
         loadFromFile();
 
@@ -96,33 +112,42 @@ public class SubBookActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *  Called when call to another activity has come back
+     * @param requestCode the number this class sent when switching activities
+     * @param resultCode the number the other activity sends back
+     * @param data the data the call to the other activity had brought
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Subscription newSubscription = new Subscription();
+        Subscription newSubscription;
+        String action;
 
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Request code == 1 mean that this class is expecting new subscription
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                newSubscription.setName(data.getStringExtra("name"));
-                newSubscription.setMonthlyCharge(Double.parseDouble(data.getStringExtra(
-                        "monthlyCharge")));
-                newSubscription.setComments(data.getStringExtra("comments"));
-                newSubscription.setDateStartedDayOfMonth(Integer.parseInt(data.getStringExtra(
-                        "day")));
-                newSubscription.setDateStartedMonth(Integer.parseInt(data.getStringExtra(
-                        "month")));
-                newSubscription.setDateStartedYear(Integer.parseInt(data.getStringExtra(
-                        "year")));
-
+                newSubscription = (Subscription) data.getExtras().getSerializable("newSub");
 
                 subscriptionList.add(newSubscription);
                 adapter.notifyDataSetChanged();
 
                 saveInFile();
             }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
+
+         // Request code == 2 means that this class is expecting a modification/deltion of a subscription
+        } else if (requestCode == 2){
+            if(resultCode == Activity.RESULT_OK){
+                action = data.getStringExtra("action");
+                if (action.equals("DELETE")){                       // delete clicked subscription
+                    subscriptionList.remove(clickedSubscription);
+                    adapter.notifyDataSetChanged();
+
+                    saveInFile();
+                } else if (action.equals("MODIFIED")) {             // update subscription values
+                    newSubscription = (Subscription) data.getExtras().getSerializable("newsub");
+                }
             }
         }
     }
@@ -152,6 +177,11 @@ public class SubBookActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads the subscription from a file
+     *
+     * @throws RuntimeException the file is not found or somethings wrong with IO
+     */
     private void loadFromFile() {
 
         try {

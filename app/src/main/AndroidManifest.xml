@@ -26,12 +26,20 @@
         </activity>
         <activity
             android:name=".CreateSubscriptionActivity"
+            android:label="Create Subscription"
             android:parentActivityName=".SubBookActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SubBookActivity" />
         </activity>
-        <activity android:name=".ModifySubscriptionActivity"></activity>
+        <activity
+            android:name=".ModifySubscriptionActivity"
+            android:label="Modify Subscription"
+            android:parentActivityName=".SubscriptionDetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SubscriptionDetailsActivity" />
+        </activity>
     </application>
 
 </manifest>
